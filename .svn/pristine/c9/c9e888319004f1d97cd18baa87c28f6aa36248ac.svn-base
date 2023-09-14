@@ -1,0 +1,25 @@
+package kr.or.ddit.salary.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.salary.vo.SalaryVO;
+
+@Mapper
+public interface SalaryDAO {
+	
+	/**
+	 * 급여테이블에 넣는다
+	 * @return
+	 */
+	public int insertSalary();
+	
+	/**
+	 * 급여 가져오기
+	 * @return
+	 */
+	public List<SalaryVO> salaryList();
+	
+	
+}

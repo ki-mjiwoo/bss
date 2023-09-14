@@ -1,0 +1,40 @@
+package kr.or.ddit.training.vo;
+
+import java.time.LocalDate;
+
+import javax.validation.constraints.NotBlank;
+
+import lombok.Data;
+
+/**
+ * 
+ * 직원교육 vo
+ * 
+ */
+@Data
+public class TrainingVO {
+	
+	private String code;
+	@NotBlank
+	private Integer trainNo;
+	@NotBlank
+	private String lectorId;
+	private String trainType;
+	@NotBlank
+	private String trainPlace;
+	@NotBlank
+	private Integer trainTime;
+	@NotBlank
+	private String trainTarget;
+	@NotBlank
+	private String trainName;
+	@NotBlank
+	private String trainContent;
+	@NotBlank
+	private LocalDate trainPeriod;
+	@NotBlank
+	private String trainSign;
+	
+	private String lectorName; //강사명
+	
+}

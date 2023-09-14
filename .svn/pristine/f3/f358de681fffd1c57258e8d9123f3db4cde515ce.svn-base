@@ -1,0 +1,22 @@
+package kr.or.ddit.salary.service;
+
+import java.util.List;
+
+import kr.or.ddit.salary.vo.SalaryVO;
+
+public interface SalaryService {
+	
+	/**
+	 * 급여 전체 조회
+	 * @return
+	 */
+	public List<SalaryVO> salaryList();
+	
+	/**
+	 * 급여테이블 insert
+	 * @return
+	 */
+	public boolean createSalary();
+	
+	
+}

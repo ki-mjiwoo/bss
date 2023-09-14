@@ -1,0 +1,81 @@
+package kr.or.ddit.BoardCompl.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.BoardCompl.dao.OthersDAO;
+import kr.or.ddit.BoardCompl.service.ComplboardSerivce;
+import kr.or.ddit.BoardCompl.vo.ComplboardVO;
+import kr.or.ddit.BoardCompl.vo.DepVO;
+import kr.or.ddit.BoardCompl.vo.EmpVO;
+import kr.or.ddit.enumpkg.ServiceResult;
+import kr.or.ddit.validate.groups.InsertGroup;
+
+
+/**
+ * @author PC-26
+ * 칭찬합니다 등록
+ */
+@Controller
+@RequestMapping("/board/complInsert")
+public class ComplboardInsertController {
+	@Inject
+	private ComplboardSerivce service;
+	@Autowired
+	private OthersDAO othersDAO;
+	
+	@ModelAttribute("empList")
+	public List<EmpVO> empList(){
+		return othersDAO.selectEmpList();
+	}
+	
+	@ModelAttribute("depList")
+	public List<DepVO> depList(){
+		return othersDAO.selectDepList();
+	}
+	
+	@ModelAttribute("compl")
+	public ComplboardVO compl(){
+		return new ComplboardVO();
+	}
+	
+	@GetMapping
+	public String getHandler(){
+		return "board/complForm";
+	}
+	
+	@PostMapping
+	public String postHandler(
+		Model model
+		, @Validated(InsertGroup.class) @ModelAttribute("compl") ComplboardVO compl //공통객체?
+		, Errors errors	
+	){
+		String logicalViewName  = null;
+		if(!errors.hasErrors()) {
+			boolean result = service.createCompl(compl);
+			if(result == true) {
+				logicalViewName = "redirect:/board/boardDetail?what="+compl.getComplNo();
+			}else {
+				model.addAttribute("message", "서버 오류, 잠시 뒤 다시 시도하세요.");
+				logicalViewName = "compl/complForm";
+			}
+		}else {
+			logicalViewName = "compl/complForm";
+		}
+		
+		return logicalViewName;
+		
+	}
+	
+}

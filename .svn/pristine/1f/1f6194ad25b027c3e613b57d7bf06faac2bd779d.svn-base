@@ -1,0 +1,13 @@
+package kr.or.ddit.resignation.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class ResignationController {
+
+	@RequestMapping("/pm/appointments/resignation")
+	public String resignation() {
+		return "pm/appointments/resignation";
+	}
+}

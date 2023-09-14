@@ -1,0 +1,121 @@
+package kr.or.ddit.mail.controller;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.mail.service.MailBoxService;
+import kr.or.ddit.mail.vo.MailBoxVO;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Controller
+@RequestMapping("/mailDelete/")
+public class MailBoxDeleteController {
+	private final MailBoxService service;
+	
+	@RequestMapping("waste.do")
+	public String waste(
+	@RequestParam(name = "mailNo", required = true) String mailNo
+//	, Model model
+	, Principal principal
+	) {
+		String logicalViewName = null;
+		boolean result = true;
+		result = service.deleteMail(mailNo);
+		
+		String empCd = principal.getName();
+		List<MailBoxVO> wasteList = service.wasteMailList(empCd);
+		model.addAttribute("wasteList", wasteList);
+		
+		
+		if(result == true) {
+			logicalViewName = "mail/waste/wasteList";
+		}else {
+			
+		}
+		
+		return logicalViewName;
+	}
+	
+	@RequestMapping("wasteSelectMail.do")
+	public String wasteSelectMail(
+			@RequestParam("mailNos") String mailNos
+			, Principal principal
+			, Model model
+			) {
+		String empCd = principal.getName();
+		String[] mailNoArray = mailNos.split(",");
+	    
+	    for (String mailNo : mailNoArray) {
+	        service.deleteMail(mailNo);
+	    }
+	    List<MailBoxVO> wasteList = service.wasteMailList(empCd);
+	    model.addAttribute("wasteList", wasteList);
+		
+		return "mail/waste/wasteList";
+	}
+	
+	@RequestMapping("wasteList.do")
+	public String wasteList(
+			Principal principal
+			, Model model
+		) {
+		String empCd = principal.getName();
+		List<MailBoxVO> wasteList = service.wasteMailList(empCd);
+		model.addAttribute("wasteList", wasteList);
+		
+		return "mail/waste/wasteList";
+	}
+	
+	@RequestMapping("wasteView.do")
+	public String wasteView(@RequestParam(name = "mailNo", required = true) String mailNo, Model model) {
+		MailBoxVO mail = service.retriveMailDetail(mailNo);
+
+		model.addAttribute("mail", mail);
+
+		return "mail/allMail/mailDetail";
+	}
+	
+	@RequestMapping("wasteMail.do")
+	public String wasteMail(
+			@RequestParam("mailNos") String mailNos
+			, Principal principal
+			, Model model
+			) {
+		String empCd = principal.getName();
+		String[] mailNoArray = mailNos.split(",");
+	    
+	    for (String mailNo : mailNoArray) {
+	        service.removeMail(mailNo);
+	    }
+	    List<MailBoxVO> wasteList = service.wasteMailList(empCd);
+	    model.addAttribute("wasteList", wasteList);
+		
+		return "mail/waste/wasteList";
+	}
+	
+	@RequestMapping("restoreMail.do")
+	public String restoreMail(
+			@RequestParam("mailNos") String mailNos
+			, Principal principal
+			, Model model
+			) {
+		String empCd = principal.getName();
+		String[] mailNoArray = mailNos.split(",");
+		
+		for (String mailNo : mailNoArray) {
+	        service.restoreMail(mailNo);
+	    }
+	    List<MailBoxVO> wasteList = service.wasteMailList(empCd);
+	    model.addAttribute("wasteList", wasteList);
+		
+		return "mail/waste/wasteList";
+	}
+}

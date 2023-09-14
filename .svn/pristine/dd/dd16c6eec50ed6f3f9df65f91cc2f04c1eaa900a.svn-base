@@ -1,0 +1,118 @@
+package kr.or.ddit.employee.service;
+
+import java.text.MessageFormat;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.Red;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.appointments.dao.AppointmentsDAO;
+import kr.or.ddit.appointments.vo.AppointmentsVO;
+import kr.or.ddit.business.dao.BusinessDAO;
+import kr.or.ddit.business.vo.BusinessVO;
+import kr.or.ddit.career.dao.CareerDAO;
+import kr.or.ddit.career.vo.CareerVO;
+import kr.or.ddit.department.dao.DepartmentDAO;
+import kr.or.ddit.department.vo.DepartmentVO;
+import kr.or.ddit.employee.dao.EmployeeDAO;
+import kr.or.ddit.employee.vo.EmployeeVO;
+import kr.or.ddit.employee.vo.EmployeeVOWrapper;
+import kr.or.ddit.family.dao.FamilyDAO;
+import kr.or.ddit.family.vo.FamilyVO;
+import kr.or.ddit.license.dao.LicenseDAO;
+import kr.or.ddit.license.vo.LicenseVO;
+import kr.or.ddit.pagingVO.PaginationInfo;
+import kr.or.ddit.position.dao.PositionDAO;
+import kr.or.ddit.position.vo.PositionVO;
+import kr.or.ddit.resignation.dao.ResignationDAO;
+import kr.or.ddit.resignation.vo.ResignationVO;
+import kr.or.ddit.university.dao.UniversityDAO;
+import kr.or.ddit.university.vo.UniversityVO;
+
+@Service
+public class EmployeeServiceImpl implements EmployeeService {
+	@Inject
+	private EmployeeDAO empDAO;
+	@Inject
+	private DepartmentDAO depDAO;
+	@Inject
+	private PositionDAO poDAO;
+	@Inject
+	private BusinessDAO busDAO;
+	@Inject
+	private FamilyDAO famDAO;
+	@Inject
+	private LicenseDAO liDAO;
+	@Inject
+	private CareerDAO carDAO;
+	@Inject
+	private AppointmentsDAO appDAO;
+	@Inject
+	private UniversityDAO uniDAO;
+	@Inject
+	private ResignationDAO reDAO;
+	
+	
+	
+	@Override
+	public boolean createEmployee(EmployeeVO employee) {
+	boolean result = true;
+	result = empDAO.insertEmployee() > 0 ? true:false;
+	if(result) {
+		depDAO.insertDepartment(employee.getDepartment());
+		poDAO.insertPosition(employee.getPosition());
+		busDAO.insertBusiness(employee.getBusiness());
+		uniDAO.insertUniversity(employee.getUniersity());
+		reDAO.insertResination(employee.getResignation());
+		appDAO.insertAppointments(employee.getAppointment());
+		if(famDAO.insertFamily(employee.getFamily()) > 0) {
+			if(liDAO.insertLicense(employee.getLicense()) > 0) {
+				carDAO.insertCareer(employee.getCareer());
+			}
+		} 
+	}else {
+		
+	}
+	
+	return result;
+	}
+
+	@Override
+	public List<EmployeeVO> retrieveEmpList(PaginationInfo paging) {
+		long totalRecord = empDAO.selectTotalRecord(paging);
+		paging.setTotalRecord(totalRecord);
+		return empDAO.selectEmpList(paging);
+	}
+	
+	@Override
+	public EmployeeVO retrieveEmpDetail(String empCd) {
+		return empDAO.empDetail(empCd);
+	}
+
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		EmployeeVO member = empDAO.selectEmployeeForAuth(username);
+		if(member==null) {
+			throw new UsernameNotFoundException(MessageFormat.format("{0} 사용자 없음.",username));
+		}
+		
+		return new EmployeeVOWrapper(member);
+	}
+
+	@Override
+	public boolean modifyEmployee(EmployeeVO emp) {
+		int cnt = empDAO.updateEmployee(emp);
+		return cnt > 0;
+	}
+
+	@Override
+	public List<EmployeeVO> employeeList() {
+		return empDAO.employeeList();
+	}
+
+}

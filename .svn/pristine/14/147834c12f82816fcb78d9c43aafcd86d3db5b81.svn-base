@@ -1,0 +1,76 @@
+package kr.or.ddit.attendance.controller;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.attendance.service.AttendanceService;
+import kr.or.ddit.attendance.vo.AttendanceVO;
+import kr.or.ddit.employee.vo.EmployeeVOWrapper;
+
+/**
+ *  
+ * 출틔근 등록 컨트롤러
+ * 
+ */
+@Controller
+@RequestMapping("/pm/servicemanagement/attendInsert.do")
+public class AttendanceInsertController {
+	@Inject
+	private AttendanceService service;
+	
+	@ModelAttribute("attend")
+	public AttendanceVO attendVO() {
+		return new AttendanceVO();
+	}
+	
+	/**
+	 * 출퇴근 등록 Insert
+	 * @param attend
+	 * @param principal
+	 * @param model
+	 * @return
+	 */
+	@PostMapping
+	public String attendInsert(
+			@ModelAttribute("attend") AttendanceVO attend,
+			Authentication authentication,
+			HttpServletRequest request,
+			Model model
+	) {
+		
+		EmployeeVOWrapper wrapper = (EmployeeVOWrapper) authentication.getPrincipal();
+		String empName = wrapper.getRealUser().getEmpName();
+		attend.setEmpName(empName);
+
+		LocalDate currentDate = LocalDate.now();
+		attend.setAtteDate(currentDate); //출근일
+
+		LocalDateTime currentTime = LocalDateTime.now();
+		attend.setAtteStime(currentTime);//출근시간
+		
+		String viewName = null;
+		
+		boolean success = service.createAttend(attend);
+		if(success) {
+			 HttpSession session = request.getSession();
+		     session.setAttribute("attendanceRecorded", true);
+			
+		     viewName = "redirect:/pm/servicemanagement/attend";
+		} else {
+			model.addAttribute("message", "출근부 작성 중 문제발생");
+			viewName = "pm/servicemanagement/attend";
+		}
+		return viewName;
+	}
+}

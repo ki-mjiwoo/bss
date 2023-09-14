@@ -1,0 +1,8 @@
+package kr.or.ddit.license.dao;
+
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public class LicenseDAO {
+
+}

@@ -1,0 +1,75 @@
+package kr.or.ddit.vocation.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.pagingVO.PaginationInfo;
+import kr.or.ddit.pagingVO.SimpleCondition;
+import kr.or.ddit.vocation.service.VocationService;
+import kr.or.ddit.vocation.vo.VocationVO;
+
+@Controller
+public class VocationController {
+	@Inject
+	private VocationService service;
+
+	@ModelAttribute("simpleCondition")
+	public SimpleCondition simpleCondition() {
+		return new SimpleCondition();
+	}
+	
+	@RequestMapping("/pm/servicemanagement/vocation")
+	public String vocation(
+			@RequestParam(name = "page", required = false, defaultValue = "1")
+			long currentPage
+			, @ModelAttribute("simpleCondition") SimpleCondition simpleCondition
+			, Model model
+			) {
+		PaginationInfo<VocationVO> paging = new PaginationInfo<>(10, 5);
+		paging.setCurrentPage(currentPage);
+		paging.setSimpleCondition(simpleCondition);
+		
+		List<VocationVO> vocation = service.retrieveVocationList(paging);
+		paging.setDataList(vocation);
+		model.addAttribute("paging", paging);
+		
+		return "pm/servicemanagement/vocation";
+	}
+	
+	
+	/**
+	 * 연가 전체조회 화면
+	 * @param model
+	 * @return
+	 */
+//	@RequestMapping("/pm/servicemanagement/vocation")
+//	public String vocation(
+//			Model model
+//	) {
+//		
+//		List<VocationVO> vocation = service.retrieveVocationList();
+//		model.addAttribute("vocation", vocation);
+//		
+//		return "pm/servicemanagement/vocation";
+//	}
+	
+	/**
+	 * 연가 추가된 후 추가된 데이터 가지고 간 전체조회화면
+	 * header : json타입 , ajax-dataType : json
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/pm/servicemanagement/vocation", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public List<VocationVO> vocationJson() {
+		return service.retrieveVocationList();
+	}
+}

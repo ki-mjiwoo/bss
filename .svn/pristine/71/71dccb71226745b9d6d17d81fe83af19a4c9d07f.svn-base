@@ -1,0 +1,26 @@
+package kr.or.ddit.edApproval.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.edApproval.dao.ApprovalDao;
+import kr.or.ddit.employee.vo.EmployeeVO;
+
+@Service
+public class ApprovalServiceImpl implements ApprovalService {
+	
+	@Inject
+	private ApprovalDao approvalDao;
+	
+	/**
+	 * 결재선 지정 시 직원 검색을 위한 직원 정보
+	 */
+	public List<EmployeeVO> retrieveEmpList(){
+		return approvalDao.selectEmpList() ;
+		
+	}
+	
+}

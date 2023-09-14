@@ -1,0 +1,171 @@
+package kr.or.ddit.finapi.controller;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.or.ddit.finapi.vo.AccountVO;
+import kr.or.ddit.finapi.vo.ManageBankVO;
+import kr.or.ddit.finapi.vo.StatisticsVO;
+
+@Controller
+@RequestMapping("/finApi/")
+public class GeneralController {
+
+	@RequestMapping("general")
+	public String general(Model model) {
+		List<StatisticsVO> statisticsList = new ArrayList<StatisticsVO>();
+		statisticsList(statisticsList, "A");
+
+		List<ManageBankVO> bankList = new ArrayList<ManageBankVO>();
+
+		bankList(bankList);
+
+		model.addAttribute("bankList", bankList);
+		model.addAttribute("statisticsList", statisticsList);
+		return "fin/manageInfo/general";
+	}
+
+	@GetMapping("accountList.do")
+	public String accountList(Model model, String listNo) {
+		List<AccountVO> accountList = new ArrayList<AccountVO>();
+		accountList(listNo, accountList);
+		model.addAttribute("accountList", accountList);
+		return "fin/manageInfo/ajax/accountList";
+	}
+
+	/**
+	 * 통계코드 가져오기
+	 * @param listNo
+	 * @param accountList
+	 */
+	private void accountList(String listNo, List<AccountVO> accountList) {
+	    AccountVO account;
+	    try {
+	        URL url = new URL(
+	            "http://fisis.fss.or.kr/openapi/accountListSearch.json?lang=kr&auth=e81ca820290fdf2f8e55a6fd3791327c&listNo=" + listNo);
+	        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	        connection.setRequestMethod("GET");
+
+	        int responseCode = connection.getResponseCode();
+	        if (responseCode == HttpURLConnection.HTTP_OK) {
+	            ObjectMapper objectMapper = new ObjectMapper();
+	            Map<String, Object> map = new HashMap<String, Object>();
+	            map = objectMapper.readValue(connection.getInputStream(), new HashMap().getClass());
+
+	            Map<String, Object> resultMap = (Map<String, Object>) map.get("result");
+	            List<Map<String, Object>> list = (List<Map<String, Object>>) resultMap.get("list");
+
+	            for (Map<String, Object> baseItem : list) {
+	                account = objectMapper.convertValue(baseItem, AccountVO.class);
+	                accountList.add(account);
+	            }
+	        } else if (responseCode == 307) {
+	            // 수동 리다이렉션 처리
+	            String newURL = connection.getHeaderField("Location");
+	            URL newUrl = new URL(newURL);
+	            HttpURLConnection newConnection = (HttpURLConnection) newUrl.openConnection();
+	            newConnection.setRequestMethod("GET");
+	            ObjectMapper objectMapper = new ObjectMapper();
+	            Map<String, Object> map = new HashMap<String, Object>();
+	            map = objectMapper.readValue(newConnection.getInputStream(), new HashMap().getClass());
+
+	            Map<String, Object> resultMap = (Map<String, Object>) map.get("result");
+	            List<Map<String, Object>> list = (List<Map<String, Object>>) resultMap.get("list");
+
+	            for (Map<String, Object> baseItem : list) {
+	                account = objectMapper.convertValue(baseItem, AccountVO.class);
+	                accountList.add(account);
+	            }
+	        } else {
+	            System.out.println("Server responded with status code: " + responseCode);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	/**
+	 * 은행리스트 불러오기
+	 * 
+	 * @param bankList
+	 */
+	private void bankList(List<ManageBankVO> bankList) {
+		ManageBankVO bank;
+		try {
+			URL url = new URL(
+					"https://fisis.fss.or.kr/openapi/companySearch.json?lang=kr&auth=e81ca820290fdf2f8e55a6fd3791327c&partDiv=A");
+
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+
+			// JSON 데이터를 map으로 매핑
+			ObjectMapper objectMapper = new ObjectMapper();
+			Map<String, Object> map = new HashMap<String, Object>();
+			map = objectMapper.readValue(connection.getInputStream(), new HashMap().getClass());
+
+			// json의 result로 담겨서 온다
+			Map<String, Object> resultMap = (Map<String, Object>) map.get("result");
+
+			// result.list -> 은행정보
+			List<Map<String, Object>> list = (List<Map<String, Object>>) resultMap.get("list");
+
+			for (Map<String, Object> baseItem : list) {
+				bank = objectMapper.convertValue(baseItem, ManageBankVO.class);
+				if (bank.getFinanceNm().contains("(구)") || bank.getFinanceNm().contains("[폐]"))
+					continue;
+				bankList.add(bank);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 통계검색목록
+	 * 
+	 * @param statisticsList
+	 */
+	private void statisticsList(List<StatisticsVO> statisticsList, String smlDiv) {
+		StatisticsVO statistics;
+		try {
+			URL url = new URL(
+					"https://fisis.fss.or.kr/openapi/statisticsListSearch.json?lang=kr&auth=e81ca820290fdf2f8e55a6fd3791327c&lrgDiv=A&smlDiv="
+							+ smlDiv);
+
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+
+			// JSON 데이터를 map으로 매핑
+			ObjectMapper objectMapper = new ObjectMapper();
+			Map<String, Object> map = new HashMap<String, Object>();
+			map = objectMapper.readValue(connection.getInputStream(), new HashMap().getClass());
+
+			// json의 result로 담겨서 온다
+			Map<String, Object> resultMap = (Map<String, Object>) map.get("result");
+
+			// result.list -> 은행정보
+			List<Map<String, Object>> list = (List<Map<String, Object>>) resultMap.get("list");
+
+			for (Map<String, Object> baseItem : list) {
+				statistics = objectMapper.convertValue(baseItem, StatisticsVO.class);
+				statisticsList.add(statistics);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}

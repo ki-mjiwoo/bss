@@ -1,0 +1,58 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<c:if test="${not empty salaryDetailList}">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row mb-1">
+				<h4 class="col-md-10">${salaryDetailList[0].salaryVO.salCalcStart}~${salaryDetailList[0].salaryVO.salCalcEnd}전체 사원 급여정보 </h4>
+			    <c:if test="${salaryDetailList[0].salaryVO.salGiveYn eq 'N'}">
+			        <button class="col-md-1 btn btn-primary btn-sm">계산된 급여 확정</button>
+			        <button class="col-md-1 btn btn-primary btn-sm">계산된 급여 확정</button>
+			    </c:if>
+			</div>
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>급여번호</th>
+						<th>직원번호</th>
+						<th>직원명</th>
+						<th>수당</th>
+						<th>공제</th>
+						<th>급여 총액</th>
+					</tr>
+				</thead>
+				<tbody id="listBody">
+					<c:forEach items="${salaryDetailList}" var="salaryDetail">
+						<tr class="datatr" data-salno="${salaryDetail.salNo}" data-empcd="${salaryDetail.empCd }">
+							<td>${salaryDetail.salNo}</td>
+							<td>${salaryDetail.empCd}</td>
+							<td>
+								${salaryDetail.employeeVO.empName}
+							</td>
+							<td><c:forEach items="${salaryDetail.allowHistoryList}"
+									var="allowHistory">
+									<div>${allowHistory.allowVO.allowNm}:
+										<fmt:formatNumber value="${allowHistory.allowAmt }" type="currency"/></div>
+								</c:forEach></td>
+							<td><c:forEach items="${salaryDetail.ddcHistoryList}"
+									var="ddcHistory">
+									<div>${ddcHistory.ddcVO.ddcNm}:  <fmt:formatNumber value="${ddcHistory.ddcAmt }" type="currency"/></div>
+								</c:forEach></td>
+							<td><fmt:formatNumber value="${salaryDetail.salTotal}" type="currency"/></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</c:if>
+
+<script>
+ $(listBody).on("click", "tr.datatr", function(event){ 
+     let salNo = $(this).data("salno");  
+    let empCd = $(this).data("empcd");  
+ location.href = "salaryDetailView.do?salNo=" + salNo+"&empCd="+empCd; 
+ }); 
+ </script> 

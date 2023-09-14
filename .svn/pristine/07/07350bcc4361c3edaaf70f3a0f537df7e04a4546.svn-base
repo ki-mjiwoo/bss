@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.resignation.dao.ResignationDAO">
+	<select id="reEmployeeList" resultType="EmployeeVO">
+		SELECT 
+        	EMP_NAME, EMP_RESIGNATION, RE_TREATMENT, RE_DATE, RE_GIVE
+        	, RE_MONEY, RE_CONT, STATE_NM
+        FROM EMPLOYEE EMP 
+        	LEFT OUTER JOIN RESIGNATION RE ON (EMP.EMP_CD = RE.EMP_CD)
+        	LEFT OUTER JOIN STATE ON(RE.CODE = STATE.CODE)
+        WHERE EMP_RESIGNATION = 'Y'
+        ORDER BY EMP_NAME ASC
+	</select>
+	
+</mapper>

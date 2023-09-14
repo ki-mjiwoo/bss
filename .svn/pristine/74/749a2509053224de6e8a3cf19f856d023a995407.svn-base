@@ -1,0 +1,23 @@
+package kr.or.ddit.license.vo;
+
+import java.time.LocalDate;
+
+import javax.validation.constraints.NotBlank;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(of = {"licenseCd","empCd"})
+public class LicenseVO {
+
+	@NotBlank
+	private Integer licenseCd;
+	@NotBlank
+	private String empCd;
+	@NotBlank
+	private String licenseNm;
+	@NotBlank
+	private LocalDate licenseDate;
+	private String licenseAgency;
+}

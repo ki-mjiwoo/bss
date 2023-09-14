@@ -1,0 +1,13 @@
+package kr.or.ddit.BoardCompl.vo;
+
+import javax.validation.constraints.NotBlank;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(of="empName")
+public class EmpVO {
+	@NotBlank
+	private String empName;
+}

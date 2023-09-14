@@ -1,0 +1,126 @@
+package kr.or.ddit.employee.vo;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import kr.or.ddit.state.vo.StateVO;
+import kr.or.ddit.university.vo.UniversityVO;
+import kr.or.ddit.validate.groups.DeleteGroup;
+import kr.or.ddit.validate.groups.InsertGroup;
+import kr.or.ddit.validate.groups.UpdateGroup;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(of = "empCd")
+public class EmployeeVO implements Serializable {
+	private long rnum;
+	@NotBlank(groups = { InsertGroup.class, DeleteGroup.class })
+	private String empCd;
+	@NotBlank(groups = {DeleteGroup.class, UpdateGroup.class})
+	@Size(min = 6, max = 13, groups = Default.class)
+	@JsonIgnore
+	private transient String empPw;
+	@NotBlank(groups = InsertGroup.class)
+	private String empName;
+	@NotNull(groups = InsertGroup.class)
+	private Integer empId1;
+	@NotNull(groups = InsertGroup.class)
+	private Integer empId2;
+	@NotBlank
+	private String poCd;
+	@NotBlank
+	private String busCd;
+	@NotBlank
+	private String depCd;
+	@NotBlank
+	private String empHp;
+	@NotBlank
+	private String empMail;
+	@NotBlank
+	private String empAdd1;
+	@NotBlank
+	private String empAdd2;
+	@NotBlank
+	private String empMarry;
+	@NotBlank
+	private String empMilitary;
+	@NotBlank
+	private String empResignation;
+
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate enpStart;
+	@NotBlank
+	private String empBank;
+
+	@NotBlank
+	private String carNm;
+	@NotBlank
+	private String carPo;
+	@NotBlank
+	private String carDate;
+	@NotBlank
+	private String depName;
+	@NotNull
+	private Integer depNum;
+	@NotBlank
+	private String poName;
+	@NotNull
+	private Integer licenseCd;
+	@NotBlank
+	private String busName;
+	@NotBlank
+	private String licenseNm;
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate licenseDate;
+	private String code;
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate reTreatment;
+	private String licenseAgency;
+
+	@NotBlank
+	private String famNo;
+	private String famName;
+	private String famJob;
+	private String famBir;
+	private String famEdu;
+	private String famLive;
+	private String famNote;
+	private String famClassify;
+	@NotBlank
+	private String uniName;
+	@NotBlank
+	private String uniMajor;
+	@NotBlank
+	private String uniDegree;
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate uniStart;
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate uniEnd;
+
+	private UniversityVO uni;
+
+	private String stateNm;
+
+	private StateVO state;
+
+	private MultipartFile[] empFiles;
+
+	private Integer atchNo;
+	private String empCd2;
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate appStart;
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate appEnd;
+}

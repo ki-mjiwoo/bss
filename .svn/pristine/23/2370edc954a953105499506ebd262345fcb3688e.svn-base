@@ -1,0 +1,19 @@
+package kr.or.ddit.BoardCompl.controller;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class complboardDeleteController {
+ 
+	@ResponseBody
+	@DeleteMapping(value="/board/deleteCompl", produces = "application/json;charset=utf-8")
+	public String deleteCompl(@RequestBody Map<String, String> map) {
+		return "";
+	}
+	
+}

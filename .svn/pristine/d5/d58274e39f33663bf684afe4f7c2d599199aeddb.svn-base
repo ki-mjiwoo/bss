@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.family.dao.FamilyDAO">
+	<insert id="insertFamily" parameterType="FamilyVO">
+		<selectKey order="BEFORE" keyProperty="famNo" resultType="string">
+			select fam_seq.nextval from dual 
+		</selectKey>
+	
+		insert into family
+		(fam_no, fam_name, fam_job, fam_bir, fam_edu
+		, fam_note, fam_classify, code)
+		values
+		(
+		#{famNo,jdbcType=VARCHAR}
+		, #{famName,jdbcType=VARCHAR}
+		, #{famJob,jdbcType=VARCHAR}
+		, #{famBir,jdbcType=VARCHAR}
+		, #{famEdu,jdbcType=VARCHAR}
+		, #{famNote,jdbcType=CLOB}
+		, #{famClassify,jdbcType=VARCHAR}
+		, #{code,jdbcType=VARCHAR}
+		)
+	</insert>
+	<select id="selectFamily" resultType="FamilyVO">
+		select fam_no, fam_name, fam_job, fam_bir, fam_edu, fam_note, fam_classify, state_nm
+		from family f left outer join state s on (f.code = s.code)
+		where emp_cd = #{empCd}
+	</select>
+	
+</mapper>

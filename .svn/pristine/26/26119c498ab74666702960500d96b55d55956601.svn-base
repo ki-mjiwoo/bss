@@ -1,0 +1,16 @@
+package kr.or.ddit.resignation.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.employee.vo.EmployeeVO;
+import kr.or.ddit.resignation.vo.ResignationVO;
+
+@Mapper
+public interface ResignationDAO {
+
+	public int insertResination(ResignationVO resignation);
+	
+	public List<EmployeeVO> reEmployeeList();
+} 

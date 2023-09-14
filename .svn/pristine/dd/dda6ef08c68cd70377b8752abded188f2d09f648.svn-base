@@ -1,0 +1,27 @@
+package kr.or.ddit.training.controller;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.training.service.TrainingService;
+import kr.or.ddit.training.vo.TrainingVO;
+
+/**
+ * 
+ * 직원교육 Insert
+ * 
+ */
+@Controller
+public class TrainingInsertController {
+	
+	@RequestMapping("/pm/training/trainingInsert")
+	public String trainingInsert() {
+		return "pm/training/trainingInsert";
+	}
+}

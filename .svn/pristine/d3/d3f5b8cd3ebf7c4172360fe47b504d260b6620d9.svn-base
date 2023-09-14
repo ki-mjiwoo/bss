@@ -1,0 +1,66 @@
+package kr.or.ddit.edApproval.controller;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.attendance.vo.AttendanceVO;
+import kr.or.ddit.edApproval.service.ApprovalService;
+import kr.or.ddit.employee.vo.EmployeeVO;
+import kr.or.ddit.pagingVO.SimpleCondition;
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("ed/approval/")
+public class SignpathController {
+// 결재선, 결재선 상세 (즐겨찾기 포함)
+// Signpath, SignpathDetail
+
+	private final ApprovalService service;
+	
+//	@ModelAttribute("employee")
+//	public EmployeeVO attendance() {
+//		return new EmployeeVO();
+//	}
+	
+	// 검색
+	@ModelAttribute("simpleCondition")
+	public SimpleCondition simpleCondition() {
+	      return new SimpleCondition();
+	}
+
+	// 비동기로 검색되는 부분
+	@RequestMapping("empList")
+	public String empView(
+//		@RequestParam(name = "page", required = false, defaultValue = "1") long currentPage,
+		@ModelAttribute("simpleCondition") SimpleCondition simpleCondition
+		, Model model
+	) {
+		List<EmployeeVO> empList = service.retrieveEmpList();
+		model.addAttribute("empList", empList);
+		
+		return "ed/approval/ajax/empList";
+	}
+
+	/**
+	 * 결재선 지정 시 직원 검색을 위한 직원 정보
+	 */
+	@RequestMapping("emp.do")
+	public String empList() {
+//		List<EmployeeVO> empList = service.retrieveEmp();
+//		model.addAttribute("empList", empList);
+		return "ed/approval/emp";
+	}
+
+	
+	// 결재선 관리
+	@RequestMapping("signpathSave.do")
+	public String signpathSave() {
+		return "ed/approval/signpathSave";
+	}
+
+}

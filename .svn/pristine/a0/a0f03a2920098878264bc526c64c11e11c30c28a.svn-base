@@ -1,0 +1,38 @@
+package kr.or.ddit.messenger.controller;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.employee.service.EmployeeService;
+import kr.or.ddit.employee.vo.EmployeeVO;
+import kr.or.ddit.pagingVO.PaginationInfo;
+import kr.or.ddit.pagingVO.SimpleCondition;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Controller
+@RequestMapping("chatUser")
+public class ChatRoomUserController {
+	private final EmployeeService employeeService;
+	
+	@RequestMapping("inviteEmpList.do")
+	public String inviteEmpList(
+			Model model
+			, @RequestParam(name = "page", required = false, defaultValue = "1") long currentPage
+			, @ModelAttribute("simpleCondition") SimpleCondition simpleCondition
+			) {
+		PaginationInfo<EmployeeVO> paging = new PaginationInfo<>();
+		paging.setCurrentPage(currentPage);
+		paging.setSimpleCondition(simpleCondition);
+		
+		List<EmployeeVO> empList = employeeService.empListNotPaging(paging);
+		model.addAttribute("empList", empList);
+		
+		return "chat/temp/inviteEmpList";
+	}
+}

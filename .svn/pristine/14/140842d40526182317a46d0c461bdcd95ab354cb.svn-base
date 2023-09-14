@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.training.dao.TrainingDAO">
+	
+	<!-- 전체조회 화면  -->
+	<select id="selectTrainList" resultType="kr.or.ddit.training.vo.TrainingVO">
+		SELECT TRAIN_NO
+		, LECTOR_ID
+		, TRAIN_TYPE
+		, TRAIN_PLACE
+		, TRAIN_TIME
+		, TRAIN_TARGET
+		, TRAIN_NAME
+		, TRAIN_CONTENT
+		, TRAIN_PERIOD
+		, TRAIN_SIGN
+		, CODE
+		 FROM TRAINING
+	</select>
+	
+	<!-- 상세조회 화면  -->
+	<select id="selectTrain" resultType="kr.or.ddit.training.vo.TrainingVO" parameterType="int">
+		SELECT TRAIN_NO
+				, LECTOR_ID
+				, LECTOR_NAME
+				, TRAIN_TYPE
+				, TRAIN_PLACE
+				, TRAIN_TIME
+				, TRAIN_TARGET
+				, TRAIN_NAME
+				, TRAIN_CONTENT
+				, TRAIN_PERIOD
+				, TRAIN_SIGN
+				, CODE
+		FROM TRAINING
+		INNER JOIN LECTOR USING(LECTOR_ID)
+		WHERE TRAIN_NO = #{trainNo,jdbcType=NUMERIC}
+	</select>
+	
+	<!-- 강사조회 화면  -->
+	<select id="selectLector" resultType="kr.or.ddit.training.vo.LectorVO" >
+		SELECT LECTOR_ID
+				, LECTOR_NAME
+				, LECTOR_RECORD
+				, LECTOR_PH
+				, LECTOR_MAIL
+		FROM LECTOR
+        WHERE LECTOR_ID = #{lector_id,jdbcType=VARCHAR}
+	</select>
+</mapper>

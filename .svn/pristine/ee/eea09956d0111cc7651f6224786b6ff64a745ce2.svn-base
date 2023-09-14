@@ -1,0 +1,46 @@
+package kr.or.ddit.edApproval.fancytree;
+
+import kr.or.ddit.department.vo.DepartmentVO;
+
+public class DepartmentFancyTreeNode extends FancyTreeNodeAdapter<DepartmentVO> {
+
+    public DepartmentFancyTreeNode(DepartmentVO data) {
+        super(data);
+    }
+
+    @Override
+    public String getTitle() {
+        return getData().getDepName();
+    }
+
+    @Override
+    public String getKey() {
+        return getData().getDepCd();
+    }
+
+    @Override
+    public boolean isFolder() {
+        return true; // Department는 폴더 역할
+    }
+    
+    @Override
+    public boolean isLazy() {
+        return isFolder(); // isLazy(): 지연로딩, 폴더 노드를 클릭할 때 필요한 데이터만 요청
+    }
+    
+    // test
+//	@Override
+//	public List<FancyTreeNode<?>> getChildren() {
+//		return Optional.ofNullable(getData().get
+//						.orElse(new HashSet<>())
+//						.stream()
+//						.map(EmployeeFancyTreeNode::new)
+//						.collect(Collectors.toList());
+//	}
+    
+}
+
+
+
+
+

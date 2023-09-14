@@ -1,0 +1,55 @@
+package kr.or.ddit.papers.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.license.dao.LicenseDAO;
+import kr.or.ddit.license.service.LicenseService;
+import kr.or.ddit.license.vo.LicenseVO;
+
+@Controller
+public class PaperstListController {
+	
+	@Inject
+	private LicenseService liService;
+	@Inject
+	private LicenseDAO liDAO;
+	
+	@ModelAttribute("liList")
+	public List<LicenseVO> liList(
+			String empCd
+			, Model model
+			){
+		List<LicenseVO> liList = liService.retrieveLiList(empCd);
+		model.addAttribute("liList", liList);
+		return liDAO.licenseList(empCd);
+	}
+	
+	@RequestMapping("/papers/paperList")
+	public String documentListController() {
+		return "papers/paperList";
+	}
+	
+	@RequestMapping("/papers/proPaper")
+	public String proPaper(
+			) {
+		return "papers/proPaper";
+	}
+	@RequestMapping("/papers/empPaper")
+	public String employeePaper(
+			) {
+		return "papers/empPaper";
+	}
+	@RequestMapping("/papers/carPaper")
+	public String careerPaper(
+			) {
+		return "papers/carPaper";
+	}
+
+}

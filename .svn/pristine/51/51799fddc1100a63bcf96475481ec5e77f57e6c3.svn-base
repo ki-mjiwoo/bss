@@ -1,0 +1,43 @@
+package kr.or.ddit.employee.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.BoardCompl.dao.ComplboardDAO;
+import kr.or.ddit.BoardCompl.service.ComplboardSerivce;
+import kr.or.ddit.BoardCompl.vo.ComplboardVO;
+import kr.or.ddit.employee.vo.EmployeeVOWrapper;
+
+@Controller
+public class MyBoardListController {
+	@Inject
+	private ComplboardDAO complDAO;
+	@Inject
+	private ComplboardSerivce complService;
+	
+	
+	@ModelAttribute("complList")
+	public List<ComplboardVO> complList(Authentication authentication, Model model) {
+		
+		EmployeeVOWrapper user = (EmployeeVOWrapper) authentication.getPrincipal();
+		String empCd = user.getRealUser().getEmpCd();
+		ComplboardVO compl = new ComplboardVO();
+		List<ComplboardVO> complList = complService.myComplList(empCd);
+		compl.setComplList(complList);
+		model.addAttribute("complList", complList);
+		return complDAO.myComplBoardList(empCd);
+	}
+	
+	@RequestMapping("mypage/myBoard")
+	public String myboard() {
+		
+		return "mypage/myBoard";
+	}
+}

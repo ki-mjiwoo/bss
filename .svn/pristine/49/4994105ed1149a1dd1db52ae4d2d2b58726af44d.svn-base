@@ -1,0 +1,21 @@
+package kr.or.ddit.edApproval.vo;
+
+import java.time.LocalDate;
+
+import javax.validation.constraints.NotBlank;
+
+import lombok.Data;
+
+@Data
+public class ApprovalVO {
+
+	@NotBlank
+	private String empCd;
+	@NotBlank
+	private String empCd2;
+	@NotBlank
+	private LocalDate appStart;
+	@NotBlank
+	private LocalDate appEnd;
+	
+}

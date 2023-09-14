@@ -1,0 +1,21 @@
+package kr.or.ddit.messenger.service;
+
+import java.util.List;
+
+import kr.or.ddit.messenger.vo.ChatRoomVO;
+
+public interface ChatRoomService {
+	/**
+	 * 채팅방 상세 정보를 조회한다
+	 * @param chrId
+	 * @return
+	 */
+	public ChatRoomVO retrieveChatRoomDetail(String chrId);
+
+	/**
+	 * 채팅방 리스트를
+	 * @param empCd 로그인된 사번으로 조회해서
+	 * @return List를 반환해준다
+	 */
+	public List<ChatRoomVO> retrieveChatRoomList(String empCd);
+}
